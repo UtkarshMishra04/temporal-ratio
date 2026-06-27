@@ -44,7 +44,9 @@
         <div class="links" aria-label="Project links">
           <span class="link-pill muted">Paper coming soon</span>
           <a class="link-pill" href="#abstract">Abstract</a>
+          <a class="link-pill" href="#dataset">Dataset</a>
           <a class="link-pill" href="#videos">Videos</a>
+          <a class="link-pill" href="#libero">LIBERO</a>
           <a class="link-pill" href="#performance">Results</a>
         </div>
       </section>
@@ -132,8 +134,13 @@
           <span>TR = attention over future frames / attention over current frame</span>
         </div>
         <figure class="figure-shell accent-green">
-          <img src="./materials/figures/TR_evolution_all.png" alt="Temporal Ratio evolution across execution">
-          <figcaption>TR increases during planning phases and decreases during local manipulation.</figcaption>
+          <div class="video-facade" data-video="./materials/videos/TR_rollout.mp4">
+            <img class="facade-poster" src="./materials/figures/TR_evolution_all.png" alt="Temporal Ratio evolution across execution">
+            <button type="button" class="facade-play" aria-label="Play the TR rollout video">
+              <span class="facade-play-icon" aria-hidden="true">&#9654;</span> Play rollout
+            </button>
+          </div>
+          <figcaption>TR increases during planning phases and decreases during local manipulation. Press play to watch TR evolve over a rollout.</figcaption>
         </figure>
       </section>
 
@@ -154,6 +161,49 @@
       </section>
       -->
 
+      <section id="libero" class="content">
+        <div class="title"><b>LIBERO OOD Rollouts</b> <span class="speed-note">(one rollout per task &middot; top: rollout, bottom: predicted &middot; &#10007; = task the policy fails)</span></div>
+        <p>
+          We also evaluate on compositional out-of-distribution variants of LIBERO &mdash; spatial, goal, and
+          object generalization. Slide through one rollout per task; each clip pairs the executed rollout (top)
+          with the policy's predicted video (bottom). A few tasks the policy does not solve are marked &#10007;.
+        </p>
+
+        <div class="lib-slider">
+          <div class="lib-filters" aria-label="Filter LIBERO OOD suites">
+            <button type="button" class="lib-chip is-active" data-suite="all">All</button>
+            <button type="button" class="lib-chip" data-suite="spatial">Spatial OOD</button>
+            <button type="button" class="lib-chip" data-suite="goal">Goal OOD</button>
+            <button type="button" class="lib-chip" data-suite="object">Object OOD</button>
+          </div>
+
+          <div class="lib-stage">
+            <button type="button" class="lib-nav lib-prev" aria-label="Previous task">&#8249;</button>
+            <div id="lib-track" class="lib-track" tabindex="0" role="group" aria-label="LIBERO OOD rollouts"></div>
+            <button type="button" class="lib-nav lib-next" aria-label="Next task">&#8250;</button>
+          </div>
+
+          <div class="lib-footer">
+            <span class="lib-index" aria-live="polite">30 tasks</span>
+            <span class="lib-progress" aria-hidden="true"><span></span></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="performance" class="content">
+        <div class="title"><b>Performance &mdash; Simulation (LIBERO)</b></div>
+        <p>
+          The grouped bar chart below compares TR-Adaptive Guidance against baselines on simulation (LIBERO),
+          reporting success rates across in-distribution and compositional out-of-distribution suites.
+        </p>
+        <div class="plot-grid">
+          <figure class="figure-shell accent-blue">
+            <img class="optional-image" src="./materials/figures/sim_results_grouped_bars.png" alt="Simulation (LIBERO) success rate of TR-Adaptive Guidance versus baselines">
+            <figcaption>Simulation (LIBERO): success rate of TR-Adaptive Guidance versus baselines across suites.</figcaption>
+          </figure>
+        </div>
+      </section>
+
       <section class="content">
         <div class="title"><b>Real Robot Analysis</b></div>
         <p>
@@ -162,8 +212,46 @@
         </p>
       </section>
 
+      <section id="dataset" class="content">
+        <div class="title"><b>Training Dataset</b> <span class="speed-note">(22 tasks &middot; one clip each &middot; 5&times; &middot; click a tile or use the arrow keys)</span></div>
+        <p>
+          Our real-world policies are trained on a 22-task bimanual manipulation set drawn from the
+          open-source <a href="https://abc.bot/" target="_blank" rel="noopener">ABC dataset</a>
+          (<a href="https://huggingface.co/datasets/XDOF/ABC-130k" target="_blank" rel="noopener">ABC-130k</a>),
+          a large-scale behavior-cloning corpus collected on two-arm YAM stations. Each clip stitches the
+          synchronized wrist and scene camera views side by side. Pick a task to load it into the viewer.
+        </p>
+
+        <figure class="figure-shell accent-purple ds-spotlight">
+          <div class="ds-spot-frame">
+            <video class="ds-spot-video" muted loop playsinline preload="metadata" aria-label="Active training task clip"></video>
+            <button class="ds-spot-play" type="button" aria-label="Play clip" hidden>&#9658;</button>
+            <div class="ds-spot-progress" aria-hidden="true"><span></span></div>
+            <div class="ds-spot-fallback">Clip unavailable.</div>
+          </div>
+          <figcaption class="ds-spot-caption">
+            <span class="ds-spot-index" aria-hidden="true">01 / 22</span>
+            <span class="ds-spot-name">&nbsp;</span>
+            <span class="ds-spot-cat"><i class="ds-dot" aria-hidden="true"></i><span class="ds-cat-label"></span></span>
+          </figcaption>
+          <p class="visually-hidden" role="status" aria-live="polite" id="ds-status"></p>
+        </figure>
+
+        <div class="ds-toolbar">
+          <label class="ds-search">
+            <span class="visually-hidden">Filter tasks by keyword</span>
+            <input type="search" class="ds-search-input" placeholder="Filter tasks&hellip;" autocomplete="off" aria-controls="ds-sheet">
+          </label>
+          <span class="ds-count" aria-live="polite">22 tasks</span>
+        </div>
+
+        <div id="ds-sheet" class="ds-sheet" role="listbox" aria-label="Training task index">
+          <p class="ds-empty" hidden>No tasks match your filter.</p>
+        </div>
+      </section>
+
       <section id="videos" class="content">
-        <div class="title"><b>ID Demonstrations</b> <span class="speed-note">(all videos at 4&times; unless mentioned otherwise)</span></div>
+        <div class="title"><b>ID Policy Rollouts</b> <span class="speed-note">(autonomous, 4&times; unless mentioned otherwise)</span></div>
         <div class="video-grid grid-3" data-grid="id"></div>
       </section>
 
@@ -184,18 +272,13 @@
         <div class="video-grid grid-3" data-grid="ood"></div>
       </section>
 
-      <section id="performance" class="content">
-        <div class="title"><b>Performance</b></div>
+      <section id="performance-real" class="content">
+        <div class="title"><b>Performance &mdash; Real-world (YAM)</b></div>
         <p>
-          The grouped bar charts below compare TR-Adaptive Guidance against baselines, reporting success rates on
-          simulation (LIBERO) and real-world (YAM) tasks across in-distribution and compositional
-          out-of-distribution settings.
+          The grouped bar chart below compares TR-Adaptive Guidance against baselines on the real-world YAM tasks,
+          reporting success rates across in-distribution and compositional out-of-distribution settings.
         </p>
         <div class="plot-grid">
-          <figure class="figure-shell accent-blue">
-            <img class="optional-image" src="./materials/figures/sim_results_grouped_bars.png" alt="Simulation (LIBERO) success rate of TR-Adaptive Guidance versus baselines">
-            <figcaption>Simulation (LIBERO): success rate of TR-Adaptive Guidance versus baselines across suites.</figcaption>
-          </figure>
           <figure class="figure-shell accent-green">
             <img class="optional-image" src="./materials/figures/yam_results_grouped_bars.png" alt="Real-world (YAM) success rate of TR-Adaptive Guidance versus baselines">
             <figcaption>Real-world (YAM): success rate of TR-Adaptive Guidance versus baselines across tasks.</figcaption>
