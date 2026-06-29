@@ -241,7 +241,7 @@ figcaption,
   align-items: center;
   display: grid;
   gap: 1.4rem;
-  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .media-display.two-column .figure-shell {
@@ -249,9 +249,11 @@ figcaption,
   width: 100%;
 }
 
+/* keep the image at its natural size, just centered within its column */
 .media-display.two-column .figure-shell img {
   margin: 0 auto;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
 }
 
 .video-grid {
