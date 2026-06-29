@@ -241,7 +241,7 @@ figcaption,
   align-items: center;
   display: grid;
   gap: 1.4rem;
-  grid-template-columns: minmax(0, 0.8fr) minmax(320px, 1.25fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
 }
 
 .media-display.two-column .figure-shell {
