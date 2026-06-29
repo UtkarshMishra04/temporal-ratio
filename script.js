@@ -166,7 +166,7 @@ const datasetTasks = [
   { cat: "pickAndPlace", caption: "Unload the cups from the dish rack", file: "pickAndPlace.unloadCupsFromTabletopDishRack.mp4" },
   { cat: "pickAndPlace", caption: "Unload the mixed dishes from the dish rack", file: "pickAndPlace.unloadMixedDishesFromTabletopDishRack.mp4" },
   { cat: "pickAndPlace", caption: "Unload the plates from the dish rack", file: "pickAndPlace.unloadPlatesFromTabletopDishRack.mp4" }
-];
+].reverse(); // dataset library shown in reversed order
 
 const DS_CAT_LABEL = {
   pickAndPlace: "Pick & place",
