@@ -27,10 +27,6 @@ const videoGroups = {
     ["Throw away the snacks into the bin", "./final videos/generalization/chips-bbin.mp4"],
     ["Arrange snacks on the shelf (seen prompt)", "./final videos/generalization/chip-shelf.mp4"],
     ["Place snacks into the bin", "./final videos/generalization/chips-bin.mp4"]
-  ],
-  // Video-action disagreement example (single clip — to be supplied).
-  disagreement: [
-    ["Video-action disagreement example", "./materials/videos/video_action_disagreement.mp4"]
   ]
 };
 
@@ -109,7 +105,6 @@ function hydrateOptionalImages() {
 document.addEventListener("DOMContentLoaded", () => {
   renderVideoGrid("id");
   renderVideoGrid("ood");
-  renderVideoGrid("disagreement");
   initDatasetViewer();
   initLiberoSlider();
   initImagineLibrary();
