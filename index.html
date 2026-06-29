@@ -255,8 +255,8 @@
         <div class="video-grid grid-3" data-grid="id"></div>
       </section>
 
-      <section class="content">
-        <div class="title"><b>Video Models Generalize in Real-World Compositional Scenarios</b></div>
+      <section id="imagine-lib" class="content">
+        <div class="title"><b>Video Models Generalize in Real-World Compositional Scenarios</b> <span class="speed-note">(video-only rollouts &middot; click a clip or use the arrow keys)</span></div>
         <p>
           Run as a video model only, with no action execution, the generative backbone still imagines coherent
           futures for novel object and receptacle combinations. This is evidence that the compositional prior
@@ -264,7 +264,23 @@
           autoregressive self-forcing predictions rolled out up to 10 times, generating a 1.7-second chunk at
           each step.
         </p>
-        <div class="video-grid grid-2" data-grid="imagine"></div>
+
+        <figure class="figure-shell accent-purple ds-spotlight">
+          <div class="ds-spot-frame im-frame">
+            <video class="ds-spot-video" muted loop playsinline preload="metadata" aria-label="Imagined rollout"></video>
+            <button class="ds-spot-play" type="button" aria-label="Play clip" hidden>&#9658;</button>
+            <div class="ds-spot-progress" aria-hidden="true"><span></span></div>
+            <div class="ds-spot-fallback">Clip unavailable.</div>
+          </div>
+          <figcaption class="ds-spot-caption">
+            <span class="ds-spot-index" aria-hidden="true">01 / 15</span>
+          </figcaption>
+          <p class="visually-hidden ds-status" role="status" aria-live="polite"></p>
+        </figure>
+
+        <div id="im-sheet" class="ds-sheet im-sheet" role="listbox" aria-label="Imagined rollout index">
+          <p class="ds-empty" hidden>No clips.</p>
+        </div>
       </section>
 
       <section class="content">

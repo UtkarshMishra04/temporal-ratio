@@ -1042,3 +1042,12 @@ pre.bibtex {
     transition: none;
   }
 }
+
+/* ---- Imagine library: reuses the .ds-* viewer styles, wider 672:176 media ---- */
+.im-frame {
+  aspect-ratio: 672 / 176;
+}
+
+.im-sheet .ds-poster {
+  aspect-ratio: 672 / 176;
+}

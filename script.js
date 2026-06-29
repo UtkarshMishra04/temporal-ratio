@@ -15,11 +15,6 @@ const videoGroups = {
     ["Unscrew bottle caps (Finetuned)", "./final videos/finetuning/bottle_unscrewing.mp4"],
     ["Fold a pile of t-shirts and stack them (Finetuned, 30&times;)", "./final videos/finetuning/folding.mp4"]
   ],
-  // Video-model-only rollouts (imagined futures, no action execution).
-  imagine: [
-    ["Same scene, different prompt 1", "./final videos/imagine/1.mp4"],
-    ["Same scene, different prompt 2", "./final videos/imagine/2.mp4"]
-  ],
   // Out-of-distribution / compositional generalization.
   // Captions are the eight real-world compositional evaluation tasks (Tasks 1-8).
   // bbin = "throw away into the bin", bin = "place into the bin".
@@ -113,11 +108,11 @@ function hydrateOptionalImages() {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderVideoGrid("id");
-  renderVideoGrid("imagine");
   renderVideoGrid("ood");
   renderVideoGrid("disagreement");
   initDatasetViewer();
   initLiberoSlider();
+  initImagineLibrary();
   initVideoFacades();
   hydrateOptionalImages();
 });
@@ -571,4 +566,152 @@ function initLiberoSlider() {
 
   setCount();
   updateChrome();
+}
+
+// ---- Imagine library: spotlight + thumbnail grid of video-only rollouts ----
+// Clips are self-labeling (the prompt is burned into the top bar), so no captions.
+const imagineClips = ["1.mp4", "2.mp4", "3.mp4", "4.mp4", "5.mp4", "6.mp4", "7.mp4", "8.mp4", "9.mp4", "10.mp4", "11.mp4", "12.mp4", "13.mp4", "14.mp4", "15.mp4"];
+const IM_BASE = "./final videos/imagine_lib/";
+const imClip = (f) => encodeURI(IM_BASE + f);
+const imPoster = (f) => encodeURI(IM_BASE + "posters/" + f.replace(/\.mp4$/, ".jpg"));
+
+function initImagineLibrary() {
+  const root = document.getElementById("imagine-lib");
+  if (!root) return;
+  const sheet = root.querySelector(".ds-sheet");
+  const spot = root.querySelector(".ds-spot-video");
+  const spotIndex = root.querySelector(".ds-spot-index");
+  const spotPlay = root.querySelector(".ds-spot-play");
+  const spotFrame = root.querySelector(".ds-spot-frame");
+  const progress = root.querySelector(".ds-spot-progress > span");
+  const status = root.querySelector(".ds-status");
+  const emptyEl = sheet.querySelector(".ds-empty");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  const tiles = [];
+  let activeIndex = 0;
+  let preview = null;
+  let previewTile = null;
+  let hoverTimer = null;
+
+  imagineClips.forEach((file, i) => {
+    const tile = document.createElement("div");
+    tile.className = "ds-tile";
+    tile.id = "im-tile-" + i;
+    tile.dataset.index = String(i);
+    tile.tabIndex = -1;
+    tile.setAttribute("role", "option");
+    tile.setAttribute("aria-selected", "false");
+    tile.setAttribute("aria-label", "Imagined rollout " + (i + 1));
+
+    const img = document.createElement("img");
+    img.className = "ds-poster";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.alt = "";
+    img.src = imPoster(file);
+    img.addEventListener("error", () => tile.classList.add("missing"));
+
+    const fb = document.createElement("span");
+    fb.className = "ds-tile-fallback";
+    fb.textContent = "Rollout " + (i + 1);
+
+    tile.append(img, fb);
+    tile.addEventListener("click", () => setActive(i, true));
+    if (finePointer && !reduced) {
+      tile.addEventListener("mouseenter", () => startHover(i, tile));
+      tile.addEventListener("mouseleave", () => stopHover(tile));
+    }
+    sheet.insertBefore(tile, emptyEl);
+    tiles.push(tile);
+  });
+
+  function setActive(i, focusTile) {
+    i = Math.max(0, Math.min(imagineClips.length - 1, i));
+    if (tiles[activeIndex]) {
+      tiles[activeIndex].classList.remove("is-active");
+      tiles[activeIndex].setAttribute("aria-selected", "false");
+    }
+    activeIndex = i;
+    const tile = tiles[i];
+    tile.classList.add("is-active");
+    tile.setAttribute("aria-selected", "true");
+    tiles.forEach((t, k) => { t.tabIndex = k === i ? 0 : -1; });
+    spotFrame.classList.remove("missing");
+    spot.src = imClip(imagineClips[i]);
+    spot.load();
+    spotIndex.textContent = String(i + 1).padStart(2, "0") + " / " + imagineClips.length;
+    status.textContent = "Showing imagined rollout " + (i + 1) + " of " + imagineClips.length;
+    if (reduced) {
+      spotPlay.hidden = false;
+    } else {
+      spot.play().then(() => { spotPlay.hidden = true; }).catch(() => { spotPlay.hidden = false; });
+    }
+    if (focusTile) tile.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+  }
+
+  spot.addEventListener("timeupdate", () => {
+    if (spot.duration) progress.style.width = (spot.currentTime / spot.duration) * 100 + "%";
+  });
+  spot.addEventListener("error", () => spotFrame.classList.add("missing"), true);
+  function toggleSpot() {
+    if (spot.paused) {
+      spot.play().then(() => { spotPlay.hidden = true; }).catch(() => {});
+    } else {
+      spot.pause();
+      spotPlay.hidden = false;
+    }
+  }
+  spot.addEventListener("click", toggleSpot);
+  spotPlay.addEventListener("click", toggleSpot);
+
+  function startHover(i, tile) {
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(() => {
+      stopHover(previewTile);
+      if (!preview) {
+        preview = document.createElement("video");
+        preview.className = "ds-preview";
+        preview.muted = true;
+        preview.loop = true;
+        preview.playsInline = true;
+        preview.preload = "auto";
+      }
+      preview.src = imClip(imagineClips[i]);
+      tile.appendChild(preview);
+      previewTile = tile;
+      preview.play().catch(() => {});
+    }, 120);
+  }
+
+  function stopHover(tile) {
+    clearTimeout(hoverTimer);
+    if (preview && previewTile && (!tile || previewTile === tile)) {
+      preview.pause();
+      preview.removeAttribute("src");
+      preview.load();
+      if (preview.parentNode) preview.parentNode.removeChild(preview);
+      previewTile = null;
+    }
+  }
+
+  sheet.addEventListener("keydown", (e) => {
+    const cols = Math.max(1, getComputedStyle(sheet).gridTemplateColumns.split(" ").filter(Boolean).length);
+    let i = activeIndex;
+    switch (e.key) {
+      case "ArrowRight": i = Math.min(activeIndex + 1, tiles.length - 1); break;
+      case "ArrowLeft": i = Math.max(activeIndex - 1, 0); break;
+      case "ArrowDown": i = Math.min(activeIndex + cols, tiles.length - 1); break;
+      case "ArrowUp": i = Math.max(activeIndex - cols, 0); break;
+      case "Home": i = 0; break;
+      case "End": i = tiles.length - 1; break;
+      default: return;
+    }
+    e.preventDefault();
+    setActive(i, true);
+    tiles[i].focus();
+  });
+
+  setActive(0, false);
 }
