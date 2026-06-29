@@ -410,6 +410,9 @@ function initDatasetViewer() {
   // ---- boot: load the first clip without a pre-JS autoplay flash ----
   countEl.textContent = datasetTasks.length === 1 ? "1 task" : datasetTasks.length + " tasks";
   setActive(0, false);
+
+  // auto-advance the spotlight through tasks (pauses on hover / off-screen)
+  autoCycle(sheet.closest("section"), 5000, () => setActive((activeIndex + 1) % datasetTasks.length, false));
 }
 
 // ---- LIBERO OOD slider ----
@@ -566,6 +569,14 @@ function initLiberoSlider() {
 
   setCount();
   updateChrome();
+
+  // auto-scroll the slider one step at a time, looping (pauses on hover / off-screen)
+  autoCycle(slider, 4500, () => {
+    const max = track.scrollWidth - track.clientWidth;
+    if (max <= 4) return;
+    if (track.scrollLeft >= max - 4) track.scrollTo({ left: 0, behavior: "smooth" });
+    else page(1);
+  });
 }
 
 // ---- Imagine library: spotlight + thumbnail grid of video-only rollouts ----
@@ -714,4 +725,27 @@ function initImagineLibrary() {
   });
 
   setActive(0, false);
+
+  // auto-advance the spotlight through rollouts (pauses on hover / off-screen)
+  autoCycle(root, 7000, () => setActive((activeIndex + 1) % imagineClips.length, false));
+}
+
+// Auto-cycle a gallery on a timer. Skips ticks while the user is hovering/
+// focused inside it or while it is scrolled off-screen; disabled under
+// prefers-reduced-motion.
+function autoCycle(el, intervalMs, advanceFn) {
+  if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let hovered = false;
+  let visible = true;
+  setInterval(() => {
+    if (!hovered && visible) advanceFn();
+  }, intervalMs);
+  el.addEventListener("mouseenter", () => { hovered = true; });
+  el.addEventListener("mouseleave", () => { hovered = false; });
+  el.addEventListener("focusin", () => { hovered = true; });
+  el.addEventListener("focusout", () => { hovered = false; });
+  el.addEventListener("touchstart", () => { hovered = true; }, { passive: true });
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; }, { threshold: 0.2 }).observe(el);
+  }
 }
