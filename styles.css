@@ -150,7 +150,8 @@ p {
   margin-bottom: 0.8rem;
 }
 
-ul {
+ul,
+ol {
   margin: 0 0 0.8rem 1.4rem;
 }
 
