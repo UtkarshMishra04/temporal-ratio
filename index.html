@@ -77,7 +77,7 @@
         <div class="title"><b>Overview</b></div>
         <p>
           We study VAMs that feed partially denoised latent video features into a flow-matching action head.
-          The video backbone (here Cosmos-Predict 2.5-2B) is pre-trained on large-scale video data, finetuned on the target robot domain, and shows
+          The video backbone (here Cosmos-Predict 2.5-2B) is pretrained on large-scale video data, finetuned on the target robot domain, and shows
           strong compositional priors. However, VAMs often fail to inherit these priors after training with action data, leading to a VAG gap.
           This project is about:
         </p>
@@ -269,7 +269,7 @@
         <div class="title"><b>Video Models Generalize in Real-World Compositional Scenarios</b> <span class="speed-note">(video-only rollouts &middot;)</span></div>
         <p>
           When the video model is rolled out autoregressively, it can imagine novel object-goal combinations that were never seen in the training data. 
-          This proves that we have the necessary pre-requisites to solve the VAG gap.
+          This proves that we have the necessary prerequisites to solve the VAG gap.
           These are 10&nbsp;fps
           autoregressive self-forcing predictions rolled out up to 10 times, generating a 1.7-second chunk at
           each step. Enjoy the unexpected hallucinations and the occasional frame jumps!
