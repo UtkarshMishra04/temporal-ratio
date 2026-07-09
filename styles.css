@@ -132,6 +132,38 @@ sup {
   color: var(--muted);
 }
 
+/* unclickable pills that reveal a "Coming soon" overlay on hover */
+.link-pill.soon {
+  position: relative;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.link-pill.soon::after {
+  content: "Coming soon";
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%) translateY(4px);
+  padding: 0.2rem 0.5rem;
+  background: var(--ink);
+  border-radius: 4px;
+  color: var(--paper);
+  font-size: 0.72em;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s, transform 0.14s;
+  z-index: 10;
+}
+
+.link-pill.soon:hover::after,
+.link-pill.soon:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .title {
   border-bottom: 1px solid var(--line);
   font-size: 1.08em;
