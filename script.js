@@ -176,18 +176,19 @@ const dsPoster = (file) => encodeURI(DS_BASE + "posters/" + file.replace(/\.mp4$
 function initDatasetViewer() {
   const sheet = document.getElementById("ds-sheet");
   if (!sheet) return;
+  const root = sheet.closest("section");
 
-  const spot = document.querySelector(".ds-spot-video");
-  const spotName = document.querySelector(".ds-spot-name");
-  const spotIndex = document.querySelector(".ds-spot-index");
-  const spotDot = document.querySelector(".ds-spot-cat .ds-dot");
-  const spotCatLabel = document.querySelector(".ds-spot-cat .ds-cat-label");
-  const spotPlay = document.querySelector(".ds-spot-play");
-  const spotFrame = document.querySelector(".ds-spot-frame");
-  const progress = document.querySelector(".ds-spot-progress > span");
+  const spot = root.querySelector(".ds-spot-video");
+  const spotName = root.querySelector(".ds-spot-name");
+  const spotIndex = root.querySelector(".ds-spot-index");
+  const spotDot = root.querySelector(".ds-spot-cat .ds-dot");
+  const spotCatLabel = root.querySelector(".ds-spot-cat .ds-cat-label");
+  const spotPlay = root.querySelector(".ds-spot-play");
+  const spotFrame = root.querySelector(".ds-spot-frame");
+  const progress = root.querySelector(".ds-spot-progress > span");
   const status = document.getElementById("ds-status");
-  const countEl = document.querySelector(".ds-count");
-  const searchInput = document.querySelector(".ds-search-input");
+  const countEl = root.querySelector(".ds-count");
+  const searchInput = root.querySelector(".ds-search-input");
   const emptyEl = sheet.querySelector(".ds-empty");
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
